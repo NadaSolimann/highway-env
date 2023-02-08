@@ -229,7 +229,7 @@ class RoadNetwork(object):
             origin = rotation @ origin
             end = rotation @ end
             line_types = [LineType.CONTINUOUS_LINE if lane == 0 else LineType.STRIPED,
-                          LineType.CONTINUOUS_LINE if lane == lanes - 1 else LineType.NONE]
+                          LineType.CONTINUOUS_LINE if lane == 3 or lane == 1 else LineType.STRIPED]
             net.add_lane(*nodes_str, StraightLane(origin, end, line_types=line_types, speed_limit=speed_limit))
         return net
 
