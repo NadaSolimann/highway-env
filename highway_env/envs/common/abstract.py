@@ -66,6 +66,9 @@ class AbstractEnv(gym.Env):
         self._record_video_wrapper = None
         self.render_mode = render_mode
         self.enable_auto_render = False
+        self.num_collisions = 0
+        self.prev_lane_index = None
+        self.num_offroad_visits = 0
 
         self.reset()
 
@@ -171,15 +174,23 @@ class AbstractEnv(gym.Env):
         :param action: current action
         :return: info dict
         """
+        if self.vehicle.crashed:
+            self.num_collisions += 1
+
+        curr_lane = self.vehicle.lane_index[2]
+        prev_lane = self.prev_lane_index[2] if self.prev_lane_index else None
+        if curr_lane == 1 and prev_lane == 2 \
+            or curr_lane == 2 and prev_lane == 1:
+            # crossed offroad boundary
+            self.num_offroad_visits += 1
+
         info = {
             "speed": self.vehicle.speed,
-            "crashed": self.vehicle.crashed,
-            "action": action,
+            "num_collisions": self.num_collisions,
+            "num_offroad_visits" : self.num_offroad_visits
         }
-        try:
-            info["rewards"] = self._rewards(action)
-        except NotImplementedError:
-            pass
+        self.vehicle.crashed = False
+        self.prev_lane_index = self.vehicle.lane_index
         return info
 
     def reset(self,

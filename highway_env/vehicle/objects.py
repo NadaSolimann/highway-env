@@ -48,6 +48,8 @@ class RoadObject(ABC):
 
         self.diagonal = np.sqrt(self.LENGTH**2 + self.WIDTH**2)
         self.crashed = False
+        self.num_collisions = 0
+        self.num_offroad_visits = 0
         self.hit = False
         self.impact = np.zeros(self.position.shape)
 
@@ -93,6 +95,7 @@ class RoadObject(ABC):
             if self.solid and other.solid:
                 self.crashed = True
                 other.crashed = True
+                self.num_collisions += 1
             if not self.solid:
                 self.hit = True
             if not other.solid:
@@ -163,9 +166,28 @@ class RoadObject(ABC):
             lane = self.lane
         return lane.local_coordinates(other.position)[0] - lane.local_coordinates(self.position)[0]
 
+    # def went_offroad(self, lane: 'AbstractLane' = None) --> float:
+    #     veh_pos = lane.local_coordinates(self.position)[0]
+    #     road_pos = lane.position()
+
+    #     # lane = road.network.get_lane(lane_index)
+    #     # if speed is None:
+    #     #     speed = lane.speed_limit
+    #     # return cls(road, lane.position(longitudinal, 0), lane.heading_at(longitudinal), speed)
+    #     if (veh_pos < )
+
     @property
     def on_road(self) -> bool:
         """ Is the object on its current lane, or off-road? """
+        middle_lane = 2
+        #long, lat = self.road.network.get_lane("0", "1", middle_lane).local_coordinates(self.position)[0]
+        # print(f"lane coords : {self.lane.local_coordinates(self.position)}")
+        # print(f"smth coords : {self.position}")
+        # print(self.lane_index)
+        #print(f"local_coords: {long}, {lat}")
+        #y, x = self.road.network.get_lane("2").position
+
+        #return self.lane.on_lane(self.position, long, lat)
         return self.lane.on_lane(self.position)
 
     def front_distance_to(self, other: "RoadObject") -> float:

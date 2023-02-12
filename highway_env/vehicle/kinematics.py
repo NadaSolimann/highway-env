@@ -41,6 +41,7 @@ class Vehicle(RoadObject):
         self.prediction_type = predition_type
         self.action = {'steering': 0, 'acceleration': 0}
         self.crashed = False
+        # self.num_collisions = 0
         self.impact = None
         self.log = []
         self.history = deque(maxlen=self.HISTORY_SIZE)
@@ -126,7 +127,8 @@ class Vehicle(RoadObject):
         self.position += v * dt
         if self.impact is not None:
             self.position += self.impact
-            self.crashed = True
+            # self.crashed = True
+            # self.num_collisions += 1
             self.impact = None
         self.heading += self.speed * np.sin(beta) / (self.LENGTH / 2) * dt
         self.speed += self.action['acceleration'] * dt

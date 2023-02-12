@@ -94,6 +94,11 @@ class AbstractLane(object):
             -self.VEHICLE_LENGTH <= longitudinal < self.length + self.VEHICLE_LENGTH
         return is_on
 
+        # lane = road.network.get_lane(lane_index)
+        # if speed is None:
+        #     speed = lane.speed_limit
+        # return cls(road, lane.position(longitudinal, 0), lane.heading_at(longitudinal), speed)
+
     def is_reachable_from(self, position: np.ndarray) -> bool:
         """
         Whether the lane is reachable from a given world position
