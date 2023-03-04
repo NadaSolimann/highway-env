@@ -4,20 +4,6 @@ from pathlib import Path
 from sklearn.cluster import KMeans
 
 
-# ! not working at desired
-def fix_traj_nums(df, old_filename):
-    prev_traj = 0
-    for i, row in df.iterrows():
-        curr_traj = int(row['traj'])
-        if prev_traj > curr_traj:
-            df.at[i, 'traj'] = prev_traj + 1
-            curr_traj = prev_traj + 1
-        prev_traj = curr_traj
-
-    # Write the updated DataFrame back to a CSV file
-    df.to_csv(f'updated_{old_filename}', index=False)
-
-
 def plot_feature(df, feature, agg_func, axis, colors):
     # calculate the feature aggregation of each trajectory
     trajs_grouped = df.groupby(['intention', 'traj'])
@@ -46,7 +32,6 @@ if __name__ == "__main__":
     # TODO: generate data again
     data_file = "generated_highway_data.csv"
     data_df = pd.read_csv(data_file)
-    # fix_traj_nums(data_df, data_file)
 
     hists_path = "./histograms/"
     Path(hists_path).mkdir(parents=True, exist_ok=True)
