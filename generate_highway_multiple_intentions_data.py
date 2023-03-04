@@ -2,6 +2,8 @@ import gym
 import highway_env
 import os
 import argparse
+import pandas as pd
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Highway Multiple Intentions Example')
@@ -43,19 +45,17 @@ def add_headers(out_file):
     return out_file
 
 
-def add_traj_data(out_file, trajs, trajs_intention):
-    n = 0
+def add_traj_data(out_file, trajs, trajs_intention, traj_offset):
     for traj_idx, traj in enumerate(trajs):
         for trans_idx in range(len(traj)):
             data = '' # new transition
-            data += '{},{},'.format(traj_idx, trans_idx) # traj_num, step_num
+            data += '{},{},'.format(traj_idx + traj_offset, trans_idx) # traj_num, step_num
             data += '{},'.format(traj[trans_idx]['speed'])
             data += '{},'.format(traj[trans_idx]['num_collisions'])
             data += '{},'.format(traj[trans_idx]['num_offroad_visits'])
             data += '{},'.format(trajs_intention)
             out_file.write(data[0 : len(data) - 1] + "\n")
-        n += 1
-        print('added traj %d', n)
+        print('added traj %d', traj_idx + traj_offset)
 
 
 if __name__ == "__main__":
@@ -63,19 +63,24 @@ if __name__ == "__main__":
     highway_env.register_highway_envs()
 
     trajs = []
-    for i in range(10):
+    for i in range(2):
         env = setup_env()
         trans = get_transitions(env)
         trajs.append(trans)
 
-    data_path = "./generated_highway_data.csv"
+    data_file = "generated_highway_data.csv"
+    data_path = "./" + data_file
     if not os.path.exists(data_path):
         out_file = open(data_path, "wt")
         add_headers(out_file)
         out_file.close()
 
     out_file = open(data_path, "a+")
-    add_traj_data(out_file, trajs, args.intention)
+    try:
+        traj_offset = pd.read_csv(data_file)['traj'].iloc[-1] + 1
+    except:
+        traj_offset = 0
+    add_traj_data(out_file, trajs, args.intention, traj_offset)
     out_file.close()
 
 
@@ -85,4 +90,3 @@ if __name__ == "__main__":
     # ! num_collisions not perfectly working (but good enough?)
     # ! num_offroad_visist if done very fast, not registered
     # ! can't change number of lanes on road
-    # todo: make each simulation duration 1 min
