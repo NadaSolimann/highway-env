@@ -63,7 +63,7 @@ if __name__ == "__main__":
     highway_env.register_highway_envs()
 
     trajs = []
-    for i in range(2):
+    for i in range(10):
         env = setup_env()
         trans = get_transitions(env)
         trajs.append(trans)
