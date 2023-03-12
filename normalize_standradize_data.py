@@ -40,7 +40,7 @@ if __name__ == "__main__":
     normalize_data(df, features)
     standradize_data(df, features)
 
-    output_path = "./histograms/distributions/"
+    output_path = "./plots/distributions/"
     Path(output_path).mkdir(parents=True, exist_ok=True)
     plot_distributions(df, features, output_path)
     df.to_csv("normalized_standardized_data.csv")
