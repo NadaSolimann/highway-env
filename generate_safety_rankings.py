@@ -6,6 +6,7 @@ if __name__ == "__main__":
     # ! why needed to stand/norm before ranking, ranking is unchanged
     data_file = "generated_highway_data.csv"
     df = pd.read_csv(data_file)
+    df = df[df['step'] == 39]
 
     df["safety_score"] = df[["num_collisions", "num_offroad_visits"]]\
         .apply(tuple,axis=1).rank(method='dense',ascending=False).astype(int)
