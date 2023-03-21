@@ -69,6 +69,7 @@ class AbstractEnv(gym.Env):
         self.num_collisions = 0
         self.prev_lane_index = None
         self.num_offroad_visits = 0
+        self.action = None
 
         self.reset()
 
@@ -184,10 +185,18 @@ class AbstractEnv(gym.Env):
             # crossed offroad boundary
             self.num_offroad_visits += 1
 
+        if prev_lane == None or curr_lane == prev_lane:
+            self.action = 0     # stayed on same lane
+        elif curr_lane < prev_lane:
+            self.action = 1     # went left
+        else:
+            self.action = -1    # went right
+
         info = {
             "speed": self.vehicle.speed,
             "num_collisions": self.num_collisions,
-            "num_offroad_visits" : self.num_offroad_visits
+            "num_offroad_visits" : self.num_offroad_visits,
+            "action" : self.action
         }
         self.vehicle.crashed = False
         self.prev_lane_index = self.vehicle.lane_index

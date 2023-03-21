@@ -33,11 +33,12 @@ def get_transitions(env):
         obs, reward, done, info = env.step(action)
         trans.append(info)
         env.render()
+        print(info['action'])
     return trans
 
 
 def add_headers(out_file):
-    columns_arr = ["traj", "step", "speed", "num_collisions", "num_offroad_visits", "intention"]
+    columns_arr = ["traj", "step", "speed", "num_collisions", "num_offroad_visits", "action", "intention"]
     data = ''
     for i in range(len(columns_arr)):
         data += '{},'.format(columns_arr[i])
@@ -53,6 +54,7 @@ def add_traj_data(out_file, trajs, trajs_intention, traj_offset):
             data += '{},'.format(traj[trans_idx]['speed'])
             data += '{},'.format(traj[trans_idx]['num_collisions'])
             data += '{},'.format(traj[trans_idx]['num_offroad_visits'])
+            data += '{},'.format(traj[trans_idx]['action'])
             data += '{},'.format(trajs_intention)
             out_file.write(data[0 : len(data) - 1] + "\n")
         print('added traj %d', traj_idx + traj_offset)
@@ -87,6 +89,6 @@ if __name__ == "__main__":
     # sample of info content (updated)
     # {'speed': 29.999999004618502, 'num_collisions': 3, 'num_offroad_visits': 4}
 
-    # ! num_collisions not perfectly working (but good enough?)
-    # ! num_offroad_visist if done very fast, not registered
-    # ! can't change number of lanes on road
+    # todo: generate data again with actions
+    # todo: test correctness of the actions added
+    # todo: check the correctness of generated data file
