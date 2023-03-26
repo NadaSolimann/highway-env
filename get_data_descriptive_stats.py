@@ -28,9 +28,16 @@ def plot_feature(df, feature, agg_func, axis, colors):
     return axis
 
 
-def plot_scatterplot(df, agg_func, axis, colors):
+def plot_scatterplot(df, agg_func, axis, colors, cum_data):
     trajs_grouped = df.groupby(['intention', 'traj'])
-    agg_traj_feature = trajs_grouped["num_collisions", "num_offroad_visits"].agg(agg_func)
+    features = trajs_grouped["num_collisions", "num_offroad_visits"]
+    agg_traj_feature = features.agg(agg_func)
+    if not cum_data:
+        cumulative_state = features.sum()
+        if (agg_func == 'mean'):
+            agg_traj_feature = cumulative_state / features.count()
+        elif (agg_func == 'max'):
+            agg_traj_feature = cumulative_state
 
     intents_grouped = agg_traj_feature.groupby(['intention'])
 
@@ -44,23 +51,9 @@ def plot_scatterplot(df, agg_func, axis, colors):
     axis.set_ylabel('num_offroad_visits')
 
 
-def get_kmeans_clusters(df):
-    data = df.values
-    kmeans = KMeans(n_clusters=4)
-    pred_y = kmeans.fit_predict(data)
-    plt.scatter(data[:,0], data[:,1])
-    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='red')
-    plt.show()
-    # model.fit(matrix)
-    # labels = model.labels_
-    # results = pandas.DataFrame([df.index, labels]).T
-
-
-
-# TODO run kmeans on trajs stats and see if can recover clusters as intentions
 if __name__ == "__main__":
-    # TODO: generate data again
-    data_file = "generated_highway_data.csv"
+    # data_file = "cumulative_highway_data.csv"
+    data_file = "binary_highway_data.csv"
     data_df = pd.read_csv(data_file)
 
     plots_path = "./plots/"
@@ -73,11 +66,11 @@ if __name__ == "__main__":
     }
 
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
-    plot_scatterplot(data_df, 'min', axes[0], colors)
-    plot_scatterplot(data_df, 'mean', axes[1], colors)
-    plot_scatterplot(data_df, 'max', axes[2], colors)
+    plot_scatterplot(data_df, 'min', axes[0], colors, False) # cumulative tag
+    plot_scatterplot(data_df, 'mean', axes[1], colors, False)
+    plot_scatterplot(data_df, 'max', axes[2], colors, False)
     plt.tight_layout()
-    plt.savefig(plots_path + "data_scatterplot.png")
+    plt.savefig(plots_path + "bin_data_scatterplot.png")
 
 
     # for feature in ['speed', 'num_offroad_visits', 'num_collisions']:

@@ -70,7 +70,7 @@ if __name__ == "__main__":
         trans = get_transitions(env)
         trajs.append(trans)
 
-    data_file = "generated_highway_data.csv"
+    data_file = "test_generated_highway_data.csv"
     data_path = "./" + data_file
     if not os.path.exists(data_path):
         out_file = open(data_path, "wt")
