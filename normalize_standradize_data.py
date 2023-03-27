@@ -35,7 +35,7 @@ def plot_distributions(df, features, output_path):
 
 
 if __name__ == "__main__":
-    data_file = "generated_highway_data.csv"
+    data_file = "binary_highway_data.csv"
     df = pd.read_csv(data_file)
     features = ['num_collisions', 'num_offroad_visits', 'speed']
     df = df[df['step'] == 39]
