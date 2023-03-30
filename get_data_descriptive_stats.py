@@ -88,6 +88,21 @@ def calculate_state_action_probs(df, states, actions):
     return probs
 
 
+# def calculate_intention_action_probs(df, actions):
+
+
+def plot_intent_dist(df):
+    groups = df.groupby('intention')['action']
+    counts = groups.value_counts()
+
+    # create a bar plot of the frequencies grouped by intention
+    fig, ax = plt.subplots()
+    counts.unstack().plot(kind='bar', ax=ax)
+    ax.set_xlabel('Intention')
+    ax.set_ylabel('Frequency')
+    plt.show()
+
+
 def plot_policy_distribution(df, plots_path):
     actions = [1, -1, 0]
     actions_labels = ["Left", "Right", "Stay"]
@@ -124,6 +139,9 @@ if __name__ == "__main__":
     data_file = "binary_highway_data.csv"
     data_df = pd.read_csv(data_file)
     data_df = data_df.dropna()
+
+    plot_intent_dist(data_df)
+    exit(-1)
 
     plots_path = "./plots/"
     Path(plots_path).mkdir(parents=True, exist_ok=True)
